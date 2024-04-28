@@ -2,28 +2,27 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contacts/operations";
+import { login } from "../../redux/auth/operations";
 
-import css from "./ContactForm.module.css";
+import css from "./LoginForm.module.css";
 
-const initialValues = { name: "", number: "" };
-
-const contactFormSchema = Yup.object({
-  name: Yup.string()
+const initialValues = { email: "", password: "" };
+const loginFormSchema = Yup.object({
+  email: Yup.string()
     .required("Required")
     .min(3, "Too short")
     .max(50, "Too long"),
-  number: Yup.string()
+  password: Yup.string()
     .required("Required")
     .min(3, "Too short")
     .max(50, "Too long"),
 });
 
-const ContactForm = () => {
+const LoginForm = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = (values, actions) => {
-    dispatch(addContact(values));
+    dispatch(login(values));
 
     actions.resetForm();
   };
@@ -32,45 +31,45 @@ const ContactForm = () => {
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={contactFormSchema}
+      validationSchema={loginFormSchema}
     >
       <Form className={css.form}>
         <label className={css.formLabel}>
-          <span className={css.formInputName}>Name</span>
+          <span className={css.formInputName}>Email</span>
           <Field
             className={css.formInput}
-            type="text"
-            name="name"
-            placeholder="Enter name"
+            type="email"
+            name="email"
+            placeholder="Enter email"
             required
           />
           <ErrorMessage
             className={css.errorMessage}
-            name="name"
+            name="email"
             component="p"
           />
         </label>
         <label className={css.formLabel}>
-          <span className={css.formInputName}>Number</span>
+          <span className={css.formInputName}>Password</span>
           <Field
             className={css.formInput}
-            type="tel"
-            name="number"
-            placeholder="Enter phone number"
+            type="password"
+            name="password"
+            placeholder="Enter password"
             required
           />
           <ErrorMessage
             className={css.errorMessage}
-            name="number"
+            name="password"
             component="p"
           />
         </label>
         <button className={css.formBtn} type="submit">
-          Add contact
+          Log In
         </button>
       </Form>
     </Formik>
   );
 };
 
-export default ContactForm;
+export default LoginForm;

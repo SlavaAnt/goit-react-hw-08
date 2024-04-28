@@ -1,0 +1,47 @@
+.form {
+  /* width: 100%; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* gap: 10px; */
+  margin-bottom: 15px;
+}
+.formLabel {
+  /* display: block;
+  width: 100%; */
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  /* gap: 10px; */
+  margin-bottom: 10px;
+}
+.formInputName {
+  display: block;
+  margin-bottom: 4px;
+}
+.formInput {
+  /* width: 100%; */
+  height: 25px;
+  border-radius: 5px;
+  border: 1px solid grey;
+  padding: 5px 10px;
+  outline: transparent;
+  transition: border-color 400ms;
+
+  &:focus {
+    border-color: red;
+  }
+
+  &::placeholder {
+    /* padding: 10px; */
+  }
+}
+
+.formBtn {
+  display: block;
+  margin: 0 auto;
+  padding: 5px 10px;
+}
+
+.errorMessage {
+  color: red;
+}
