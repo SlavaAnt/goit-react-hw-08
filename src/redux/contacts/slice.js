@@ -4,6 +4,7 @@ import {
   addContact,
   deleteContact,
 } from "../contacts/operations";
+import { logout } from "../auth/operations";
 
 const contactsSlice = createSlice({
   name: "contacts",
@@ -33,12 +34,18 @@ const contactsSlice = createSlice({
           (contact) => contact.id !== action.payload.id
         );
       })
+      .addCase(logout.fulfilled, (state) => {
+        state.items = [];
+        state.loading = false;
+        state.error = null;
+      })
 
       .addMatcher(
         isAnyOf(
           fetchContacts.pending,
           addContact.pending,
-          deleteContact.pending
+          deleteContact.pending,
+          logout.pending
         ),
         (state) => {
           state.loading = true;
@@ -48,9 +55,10 @@ const contactsSlice = createSlice({
         isAnyOf(
           fetchContacts.rejected,
           addContact.rejected,
-          deleteContact.rejected
+          deleteContact.rejected,
+          logout.rejected
         ),
-        (state) => {
+        (state, action) => {
           state.loading = false;
           state.error = action.payload;
         }

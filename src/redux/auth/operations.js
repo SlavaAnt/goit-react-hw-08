@@ -62,19 +62,23 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
     return thunkApi.rejectWithValue(error.message);
   }
 });
+
 // ---------------------------------------
 // refreshUser - оновлення користувача за токеном (метод GET). Базовий тип екшену "auth/refresh". Використовується у компоненті App під час його монтування.
-
 export const refreshUser = createAsyncThunk(
   "auth/refresh",
   async (_, thunkApi) => {
+    const state = thunkApi.getState();
+    const token = state.auth.token;
+
+    if (token === null) {
+      // If there is no token, exit without performing any request
+      return thunkApi.rejectWithValue("Unable to fetch user");
+    }
+
     try {
-      const state = thunkApi.getState();
-      const token = state.auth.token;
       setAuthHeader(token);
-
       const { data } = await instance.get("/users/current");
-
       return data; // те що повертається потрапляє в action.payload
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);

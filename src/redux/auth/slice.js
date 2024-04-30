@@ -1,17 +1,6 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { register, login, refreshUser, logout } from "../auth/operations";
 
-// const handlePending = (state) => {
-//   state.loading = true;
-//   state.error = false;
-// };
-
-// const handleRejected = (state) => {
-//   state.loading = false;
-//   //   state.error = action.payload;
-//   state.error = true;
-// };
-
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -21,7 +10,7 @@ const authSlice = createSlice({
     },
     token: null,
     isLoggedIn: false,
-    // isRefreshing: false,
+    isRefreshing: false,
     loading: false,
     error: false,
   },
@@ -42,12 +31,6 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
 
-      .addCase(refreshUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isLoggedIn = true;
-        state.user = action.payload;
-      })
-
       .addCase(logout.fulfilled, (state) => {
         state.user = { name: null, email: null };
         state.token = null;
@@ -56,44 +39,34 @@ const authSlice = createSlice({
         state.error = false;
       })
 
+      .addCase(refreshUser.pending, (state) => {
+        state.isRefreshing = true;
+      })
+      .addCase(refreshUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isLoggedIn = true;
+        state.user = action.payload;
+        state.isRefreshing = false;
+      })
+      .addCase(refreshUser.rejected, (state) => {
+        state.isRefreshing = false;
+      })
+
       .addMatcher(
-        isAnyOf(
-          register.pending,
-          login.pending,
-          refreshUser.pending,
-          logout.pending
-        ),
+        isAnyOf(register.pending, login.pending, logout.pending),
         (state) => {
           state.loading = true;
           state.error = false;
         }
       )
       .addMatcher(
-        isAnyOf(
-          register.rejected,
-          login.rejected,
-          refreshUser.rejected,
-          logout.rejected
-        ),
-        (state) => {
+        isAnyOf(register.rejected, login.rejected, logout.rejected),
+        (state, action) => {
           state.loading = false;
-          //   state.error = action.payload;
-          state.error = true;
+          state.error = action.payload;
         }
       );
   },
 });
 
 export const authReducer = authSlice.reducer;
-
-// Carl Carlson
-// CarlCarlson@mail.com
-// Carl Carlson
-
-// Slava A
-// slava@mail.com
-// 123456789
-
-// slava 100
-// slava100@mail.com
-// slava100
